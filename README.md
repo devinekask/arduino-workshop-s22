@@ -1,8 +1,8 @@
 # Arduino Workshop
 
-Workshop Arduino Introduction for 2 Devine, Spring 2021.
+Workshop Arduino Introduction for 2 Devine, Spring 2022.
 
-In this workshop we'll cover the basics of Arduino, and move to Johnny-Five with Electron to build interactive applications combining computer and Arduino interaction.
+In this workshop we'll cover the basics of Arduino, and by using serial communication we can build interactive applications combining computer and Arduino interaction.
 
 ## What's Arduino?
 
@@ -26,27 +26,27 @@ It consists of a large text area where you'll write your code, a button bar on t
 
 We will try to blink an on-board LED on our Arduino.
 
-1. Copy / Paste the following code into our IDE:
+1.  Copy / Paste the following code into our IDE:
 
-```c
-int RXLED = 17; // on an Arduino Micro, PIN 17 is an onboard LED pin
+        ```c
+        int RXLED = 17; // on an Arduino Micro, PIN 17 is an onboard LED pin
 
-void setup() {
-  pinMode(RXLED, OUTPUT);
-}
+        void setup() {
+        	pinMode(RXLED, OUTPUT);
+        }
 
-void loop() {
-  digitalWrite(RXLED, HIGH);
-  delay(1000);
-  digitalWrite(RXLED, LOW);
-  delay(1000);
-}
-```
+        void loop() {
+        	digitalWrite(RXLED, HIGH);
+        	delay(1000);
+        	digitalWrite(RXLED, LOW);
+        	delay(1000);
+        }
+        ```
 
-2. Connect your Arduino Board on a free USB port.
-3. Make sure that `Tools > Board > Arduino Micro` is selected in the menu.
-4. Make sure that a port with an Arduino is selected in `Tools > Port`. The usb port with the arduino should mention something like "Arduino" at the end.
-5. Click on the right-pointing arrow button to upload the Sketch to the board.
+2.  Connect your Arduino Board on a free USB port.
+3.  Make sure that `Tools > Board > Arduino Micro` is selected in the menu.
+4.  Make sure that a port with an Arduino is selected in `Tools > Port`. The usb port with the Arduino should mention something like "Arduino" at the end.
+5.  Click on the right-pointing arrow button to upload the Sketch to the board.
 
 If everything works as it should, you should see the onboard LED blink on the board!
 
@@ -56,7 +56,7 @@ Take a look at the code from this example. The language you write Arduino code i
 
 - `void setup()`: The code in this function only runs once at startup of the program
 - `void loop()`: The code in this function runs continuously. As soon as this function exits, it runs again. You can interpret this as some sort of endless loop.
-- `pinMode`: By using this function you can configure a certain pin on the arduino as either OUTPUT or INPUT. An output pin is used to drive an external component, whereas an INPUT pin is used to read a value from a pin (eg to read a sensor value).
+- `pinMode`: By using this function you can configure a certain pin on the Arduino as either OUTPUT or INPUT. An output pin is used to drive an external component, whereas an INPUT pin is used to read a value from a pin (eg to read a sensor value).
 - `digitalWrite`: We use this function to write a binary value (HIGH or LOW) to a given pin number.
 - `delay`: This function pauses the execution of the program for a given amount of time in milliseconds.
 
@@ -64,7 +64,7 @@ Take a look at the code from this example. The language you write Arduino code i
 
 Let's spice things up a little bit. Instead of blinking the on board LED, we'll connect a real LED to the Arduino.
 
-To make an LED light up, it'll need electricity running through it. That electric current needs to flow from somewhere to a destination. Just like water in a rivier, it will flow from a high potential to a low potential. You'll need to be careful about the amount of current flowing through the LED at any given time. Just like with the river analogy, too much current / pressure might destroy a component (our LED). We will add a resistor to our circuit, to limit the current.
+To make an LED light up, it'll need electricity running through it. That electric current needs to flow from somewhere to a destination. Just like water in a river, it will flow from a high potential to a low potential. You'll need to be careful about the amount of current flowing through the LED at any given time. Just like with the river analogy, too much current / pressure might destroy a component (our LED). We will add a resistor to our circuit, to limit the current.
 
 We've used a couple of terms in the paragraph above, which are expressed in different units:
 
@@ -101,154 +101,53 @@ If it doesn't, check the following potential issues:
 - The long connector from the LED should be connected to pin 13.
 - The resistor should have a value below 1000 Ohms (1 KOhm). Resistance values can be read using the colored stripes on them (see [resistor-calculator.com](http://www.resistor-calculator.com/)). The one in the picture is a 220 Ohm resistor.
 
-## Arduino and Javascript
+## Serial Communication
 
-Until now, we've been writing C code to program our Arduino. Wouldn't it be fun to combine our Arduino sensors and outputs with our javascript frontends?
+To communicate between an Arduino and a computer (webpage) we can use [Serial communication](https://www.arduino.cc/reference/en/language/functions/communication/serial/) and the [Web Serial API](https://caniuse.com/web-serial)
 
-Using [Electron](https://electronjs.org) and [Johnny-Five](http://johnny-five.io) we can do just that! We'll upload a generic sketch (Firmata) to the Arduino and give it instructions over USB from within our Javascript code.
+### Arduino Serial
 
-### Node Version
+There are a [lot of examples on the Arduino website](https://docs.arduino.cc/built-in-examples) that are using serial communication in some way or another.
 
-Make sure to use a recent version of node. At time of writing, node versions below node 15 weren't working properly with the current versions of electron and johnny-five.
+Look for the Serial monitor in the Arduino IDE and run [this example](https://docs.arduino.cc/built-in-examples/communication/ASCIITable) Can you see the ASCII table?
 
-Check your current node version using the command below:
+One important thing to be aware of, is the type of communication. This can be binary or text based. If you only need to send a couple of values, binary (the default) can be sufficient. When you need to send a lot of values and/or commands, it might be worth it to use text based communication and come up with some kind of protocol.
+Have a look at the difference between [write()](https://www.arduino.cc/reference/en/language/functions/communication/serial/write/) and [print()](https://www.arduino.cc/reference/en/language/functions/communication/serial/print/)
 
-```bash
-node -v
-```
+### Web Serial API
 
-It'll echo the node versions number. For example:
+A great place to start is [this article on the Web Serial API](https://web.dev/i18n/en/serial/)
 
-> v14.16.1
+Some general advice:
 
-Let's update to version 16.1.0, using [nvm](https://github.com/nvm-sh/nvm):
+- The Web Serial API is not yet supported by all browsers. So don't forget to check this first.
+- The method `Serial.requestPort()` must be called on a user interaction.
+- There can be only one serial connection at a time. Remember this when you're trying to upload a new sketch while a browser is already connected to the serial port. Or when the Serial monitor is open...
 
-```bash
-nvm install v16.1.0
-```
+To get you started, you can use the lib provided here [https://github.com/devinekask/Arduino-serial](https://github.com/devinekask/Arduino-serial) Be aware this is only a starter, you'll probably need to make some adjustments to get everything working as expected.
 
-You can set this as your default version as well (so this is the version used when opening a new terminal):
+## Components to test
 
-```bash
-nvm alias default v16.1.0
-```
+You've got a lot of different components in your kit. Build and test the following examples, try to include some logging via Serial.
 
-### Electron
+### Inputs
 
-First of all, we'll run our javascript inside an Electron App. Basically, Electron is a mashup of nodejs and the Chromium rendering engine. You'll run you webpages (including javascript) locally, as a desktop application. This enables you to do everything you could do in a nodejs application but from within your frontend javascript code: access the filesystem, interact with hardware, talk to C++ extensions, ...
+- Button: <https://docs.arduino.cc/built-in-examples/digital/Button>
+- Potentiometer: <https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial> - try this out with the joystick from your kit as well! The joystick is a combination of 2 potentionmeters and one push button.
+- Photoresistor: <https://create.arduino.cc/projecthub/MisterBotBreak/how-to-use-a-photoresistor-46c5eb>. You can use this to create a laser-tripwire (<https://create.arduino.cc/projecthub/digitalfendi/super-simple-fun-laser-tripwire-aa56c9>), ask the professor for a laser diode to play with.
+- Ultrasonic Sensor: <https://docs.arduino.cc/built-in-examples/sensors/Ping>
 
-You're probably already using a couple of Desktop apps built using Electron: Visual Studio Code, Atom, Slack, Hyper, Github Desktop... are all built on top of Electron.
+### Outputs
 
-An easy way to get started is by using the [electron-webpack-quick-start project](https://webpack.electron.build/) as a starter project. 
-
-```bash
-git clone https://github.com/electron-userland/electron-webpack-quick-start p01-blink
-cd p01-blink
-npm install
-```
-
-Test launching the project, by running the dev script:
-
-```bash
-npm run dev
-```
-
-An electron window should open.
-
-### Johnny Five
-
-Johnny Five is a library which enables you to talk to electronics from Javascript. It uses a standard protocol, called Firmata, to send instructions to the Arduino over the USB connection. An instruction could be turn on an LED, read a sensor value, move a servo, ...
-
-First of all, you'll need an Arduino with the StandardFirmata sketch. Upload this Sketch (`File > Examples > Firmata > StandardFirmata`) to your Arduino UNO.
-
-Next to that, make sure you've got node-gyp installed globally: `npm install -g node-gyp`
-
-#### Hello Johnny Five
-
-We'll expand the electron-quick-start project to control an Arduino using Johnny five.
-
-Add Johnny-five to the project:
-
-```bash
-npm install johnny-five
-```
-
-Add the necessary code to `src/renderer/index.js` to talk to the board from within the renderer javascript:
-
-```javascript
-const five = require('johnny-five');
-const board = new five.Board({
-  repl: false
-});
-
-board.on("ready", () => {
-  const led = new five.Led(9);
-  led.blink(500);
-});
-```
-
-Test the application using `npm run dev`. You won't see anything happen. If you open the devtools, there's probably an error message there:
-
-> Uncaught Error: The module 'projects/p01-blink/node_modules/@serialport/bindings/build/Release/bindings.node' was compiled against a different Node.js version using NODE_MODULE_VERSION 88. This version of Node.js requires NODE_MODULE_VERSION 76. Please try re-compiling or re-installing the module (for instance, using `npm rebuild` or `npm install`).
-
-Johnny five uses a module called serialport, which uses some C++ code to send messages over USB. This C++ code is compiled for nodejs by default, but we're using an electron flavor of node! We'll need to make sure this C++ code is compatible with Electron.
-
-Add an extra script to the scripts section of your package.json:
-
-```
-"rebuild-deps": "electron-builder install-app-deps"
-```
-
-Run the rebuild-deps script:
-
-```bash
-npm run rebuild-deps
-```
-
-Launch the app again. The error should be gone now.
-
-Connect an LED to the port specified in your javascript code, you should see it blink!
-
-### Components to test
-
-You've got a lot of different components in your kit, which you can use with johnny five. Build and test the following examples:
-
-#### Inputs
-
-- Button: http://johnny-five.io/examples/button/
-- Potentiometer: http://johnny-five.io/examples/potentiometer/ - try this out with the joystick from your kit as well! The joystick is a combination of 2 potentionmeters and one push button.
-- Photoresistor: http://johnny-five.io/examples/photoresistor/. You can use this to create a laser-tripwire (http://johnny-five.io/examples/laser-trip-wire/), ask the professor for a laser diode to play with.
-- Ultrasonic Sensor: http://johnny-five.io/examples/proximity-hcsr04/ (note: you'll need to upload a different firmata sketch first)
-
-#### Outputs
-
-- Piezzo sound: http://johnny-five.io/examples/piezo/
-- DC motor: http://johnny-five.io/examples/motor/
-- Servo motor(ask the professor for a servo to play with): http://johnny-five.io/examples/servo/
-
-### Modifying the html
-
-You'll read the following on https://webpack.electron.build/development.html#use-of-html-webpack-plugin
-
-> You might notice that you don’t need an index.html to get started on your application. That’s because it is created for you, as it adds in a few extra configurations needed for the electron environment. If you are creating an electron application with webpack, you are most likely creating a Single Page Application anyways. So because of that, there is already a <div id="app"></div> provided in the markup that you can mount your application onto.
-
-If you do want to have a custom html, we'll need to extend the  webpack config of our project. Add a config object for electron webpack to our package.json (see docs at https://webpack.electron.build/configuration for more info), containing the path to your html file:
-
-```
-"electronWebpack": {
-  "renderer": {
-    "template": "src/renderer/index.html"
-  }
-}
-```
-
-Put an html file in that location and test the application. You should see your custom html.
+- Piezzo sound: <https://docs.arduino.cc/built-in-examples/digital/toneMelody>
+- DC motor: <https://learn.adafruit.com/adafruit-arduino-lesson-13-dc-motors/>
+- Servo motor(ask the professor for a servo to play with): <https://learn.adafruit.com/adafruit-arduino-lesson-14-servo-motors>
 
 ### Combinations
 
 Use your imagination to combine inputs with outputs. Sound a piezzo alarm when the laser tripwire gets triggered. Control a servo angle based on the distance of your ultrasonic sensor. Use the joystick as a speed controller for your DC motor.
 
-Because you are in javascript land, you can combine the hardware with browser logic. Make sure to try the following projects:
+By using serial communication, you can combine the hardware with browser logic. Make sure to try the following projects:
 
 1. Fade an LED using an `<input type="range">`
 2. Change a servo angle based on the x position of your mouse pointer on the screen
@@ -257,6 +156,7 @@ Because you are in javascript land, you can combine the hardware with browser lo
 
 ## Other things to check
 
+- [VS Code Arduino Extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino)
 - [View Arduino, The documentary](https://vimeo.com/18539129) (28 min)
 - [DIY Pressure Sensor](https://www.youtube.com/watch?v=_RUZtsQzSLY)
 - [Star Wars Imperial March with Floppy and Arduino](https://www.youtube.com/watch?v=B_Q6jMUdfYc)
