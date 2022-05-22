@@ -28,20 +28,20 @@ We will try to blink an on-board LED on our Arduino.
 
 1.  Copy / Paste the following code into our IDE:
 
-        ```c
-        int RXLED = 17; // on an Arduino Micro, PIN 17 is an onboard LED pin
+```c
+int RXLED = 17; // on an Arduino Micro, PIN 17 is an onboard LED pin
 
-        void setup() {
-        	pinMode(RXLED, OUTPUT);
-        }
+void setup() {
+        pinMode(RXLED, OUTPUT);
+}
 
-        void loop() {
-        	digitalWrite(RXLED, HIGH);
-        	delay(1000);
-        	digitalWrite(RXLED, LOW);
-        	delay(1000);
-        }
-        ```
+void loop() {
+        digitalWrite(RXLED, HIGH);
+        delay(1000);
+        digitalWrite(RXLED, LOW);
+        delay(1000);
+}
+```
 
 2.  Connect your Arduino Board on a free USB port.
 3.  Make sure that `Tools > Board > Arduino Micro` is selected in the menu.
