@@ -101,9 +101,18 @@ If it doesn't, check the following potential issues:
 - The long connector from the LED should be connected to pin 13.
 - The resistor should have a value below 1000 Ohms (1 KOhm). Resistance values can be read using the colored stripes on them (see [resistor-calculator.com](http://www.resistor-calculator.com/)). The one in the picture is a 220 Ohm resistor.
 
+## Keyboard and Mouse Control
+
+Our Arduino Pro Micro board has the capability of identifying itself as a keyboard and mouse. If all you need is basic input with some pushbuttons, this might be sufficient. Reading the Arduino input on your computer is just listening to keyboard / mouse events!
+
+Let's play [the chrome dino game](chrome://dino) using your Arduino. You can play this game by pressing the spacebar on your keyboard. We'll build our own keyboard with Arduino!
+
+- [Hook up a pushbutton to your Arduino](https://www.arduino.cc/en/Tutorial/BuiltInExamples/Button)
+- Take a look at File > Examples > USB > KeyboardAndMouseControl. Figure out what you need to put in the pushbutton code to send out a spacebar key code when pressing the button.
+
 ## Serial Communication
 
-To communicate between an Arduino and a computer (webpage) we can use [Serial communication](https://www.arduino.cc/reference/en/language/functions/communication/serial/) and the [Web Serial API](https://caniuse.com/web-serial)
+To communicate between a computer (webpage) and an Arduino we can use [Serial communication](https://www.arduino.cc/reference/en/language/functions/communication/serial/) and the [Web Serial API](https://caniuse.com/web-serial)
 
 ### Arduino Serial
 
